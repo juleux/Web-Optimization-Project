@@ -55,26 +55,6 @@ gulp.task('css', function () {
   .pipe(connect.reload());
 });
 
-//var merge = require('merge-stream');
-
-//gulp.task('merge', function() {
-////  var bootstrap = gulp.src('bootstrap/js/*.js')
-//    .pipe(gulp.dest('public/bootstrap'));
-//
-////  var jquery = gulp.src('jquery.cookie/jquery.cookie.js')
-//    .pipe(gulp.dest('public/jquery'));
-//
-//  return merge(htmlOutput, htmlViews);
-//});
-
-//// Inline css and save in production folder 
-//gulp.task('inline', function () {
-//	gulp.src('htmlSources')
-//   .pipe(inline())
-//   .pipe(gulp.dest('builds/production/'))
-////  .pipe(connect.reload());
-//});
-
 gulp.task('inline', function() {
    return gulp.src(htmlSources).on('error', errorHandler)
    .pipe(inline()).on('error', errorHandler)
@@ -135,7 +115,6 @@ gulp.task('connect', function() {
 });
 
 
-//gulp.task('default', ['inline','html', 'js', 'images','connect', 'watch']);
 gulp.task('default', ['clean'], function(cb) {
   runseq(['inline', 'css'],['html', 'htmlViews', 'js', 'images'],'connect', 'watch', cb);
 });
