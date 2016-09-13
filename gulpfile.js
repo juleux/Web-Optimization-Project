@@ -15,6 +15,8 @@ var gulp = require('gulp'),
 	 htmlmin = require('gulp-htmlmin'),  //compresses html
 	 cssmin = require('gulp-csso'),  //compresses css
 	 inline = require('gulp-inline-css'),  //inlines css - works best if small
+	 runseq = require('run-sequence'),  //runs tasks in specified order
+	 del = require('del'),  //removes files and directories
     concat = require('gulp-concat');  //combines content of multiple files into a single file
 
 var jsSources = [
@@ -22,44 +24,82 @@ var jsSources = [
 ];
 
 var cssSources = [
-	'builds/development/**/*.css'
+	'builds/development/views/**/*.css'  //views directory only
 ];
 
 var htmlSources = [
-	'builds/development/**/*.html'
+	'builds/development/*.html'  //does not include views directory
+];
+
+
+var htmlViews = [
+	'builds/development/views/*.html'  //html in views directory minified but not inlined
 ];
 
 var htmlOutput = [
-	'builds/production/**/*.html'
+	'builds/production/**/*.html'  //includes views directory
 ];
 
 var imgSources = [
 	'builds/development/**/img/*.*'
 ];
 
+// Clean Output Directory
+gulp.task('clean', del.bind(null, ['.tmp', 'builds/production/*', '!builds/production/.git'], {dryrun: true}));
+
 // Minify css and save in production folder - then reload page in browser
 gulp.task('css', function () {
   gulp.src(cssSources)
   .pipe(cssmin())
-  .pipe(gulp.dest('builds/production/'))
+  .pipe(gulp.dest('builds/production/views/'))
   .pipe(connect.reload());
 });
 
+//var merge = require('merge-stream');
 
-// Inline css and save in production folder 
-gulp.task('inline', function () {
-	gulp.src('builds/development/index.html')
-   .pipe(inline())
-   .pipe(gulp.dest('builds/production/'))
-//  .pipe(connect.reload());
+//gulp.task('merge', function() {
+////  var bootstrap = gulp.src('bootstrap/js/*.js')
+//    .pipe(gulp.dest('public/bootstrap'));
+//
+////  var jquery = gulp.src('jquery.cookie/jquery.cookie.js')
+//    .pipe(gulp.dest('public/jquery'));
+//
+//  return merge(htmlOutput, htmlViews);
+//});
+
+//// Inline css and save in production folder 
+//gulp.task('inline', function () {
+//	gulp.src('htmlSources')
+//   .pipe(inline())
+//   .pipe(gulp.dest('builds/production/'))
+////  .pipe(connect.reload());
+//});
+
+gulp.task('inline', function() {
+   return gulp.src(htmlSources).on('error', errorHandler)
+   .pipe(inline()).on('error', errorHandler)
+   .pipe(gulp.dest('builds/production/')).on('error', errorHandler);
 });
 
-// Minify html and save in production folder - then reload page in browser
+function errorHandler (error) {
+    console.log(error.toString());
+    this.emit('end');
+}
+
+// Minify html in top-level directory and save in production folder - then reload page in browser
 // Runs after css inline is complete
 gulp.task('html', ['inline'], function () {
   gulp.src(htmlOutput)
   .pipe(htmlmin({collapseWhitespace: true}))
   .pipe(gulp.dest('builds/production/'))
+  .pipe(connect.reload());
+});
+
+// Minify html in Views folder and save in production folder - then reload page in browser
+gulp.task('htmlViews', function () {
+  gulp.src(htmlViews)
+  .pipe(htmlmin({collapseWhitespace: true}))
+  .pipe(gulp.dest('builds/production/views/'))
   .pipe(connect.reload());
 });
 
@@ -95,4 +135,7 @@ gulp.task('connect', function() {
 });
 
 
-gulp.task('default', ['inline','html', 'js', 'images','connect', 'watch']);
+//gulp.task('default', ['inline','html', 'js', 'images','connect', 'watch']);
+gulp.task('default', ['clean'], function(cb) {
+  runseq(['inline', 'css'],['html', 'htmlViews', 'js', 'images'],'connect', 'watch', cb);
+});
