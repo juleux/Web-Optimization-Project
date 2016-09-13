@@ -14,6 +14,7 @@ var gulp = require('gulp'),
 	 gulpif = require('gulp-if'),  //enables use of conditional statements within gulp task
 	 htmlmin = require('gulp-htmlmin'),  //compresses html
 	 cssmin = require('gulp-csso'),  //compresses css
+	 inline = require('gulp-inline-css'),  //inlines css - works best if small
     concat = require('gulp-concat');  //combines content of multiple files into a single file
 
 var jsSources = [
@@ -28,23 +29,36 @@ var htmlSources = [
 	'builds/development/**/*.html'
 ];
 
+var htmlOutput = [
+	'builds/production/**/*.html'
+];
 
 var imgSources = [
 	'builds/development/**/img/*.*'
 ];
 
-// Minify html and save in production folder - then reload page in browser
-gulp.task('html', function () {
-  gulp.src(htmlSources)
-  .pipe(htmlmin({collapseWhitespace: true}))
-  .pipe(gulp.dest('builds/production/'))
-  .pipe(connect.reload());
-});
-
 // Minify css and save in production folder - then reload page in browser
 gulp.task('css', function () {
   gulp.src(cssSources)
   .pipe(cssmin())
+  .pipe(gulp.dest('builds/production/'))
+  .pipe(connect.reload());
+});
+
+
+// Inline css and save in production folder 
+gulp.task('inline', function () {
+	gulp.src('builds/development/index.html')
+   .pipe(inline())
+   .pipe(gulp.dest('builds/production/'))
+//  .pipe(connect.reload());
+});
+
+// Minify html and save in production folder - then reload page in browser
+// Runs after css inline is complete
+gulp.task('html', ['inline'], function () {
+  gulp.src(htmlOutput)
+  .pipe(htmlmin({collapseWhitespace: true}))
   .pipe(gulp.dest('builds/production/'))
   .pipe(connect.reload());
 });
@@ -64,21 +78,9 @@ gulp.task('images', function() {
   .pipe(connect.reload());
 });
 
-//// Copy All Files At The Root Level (Development) --- untested
-//gulp.task('copy', function() {
-//  return gulp.src([
-//    'development/*',
-//    '!development/*.html',
-//    'node_modules/apache-server-configs/builds/production/.htaccess'
-//  ], {
-//    dot: true
-//  }).pipe(gulp.dest('builds/production/'))
-//    .pipe($.size({title: 'copy'}));
-//});
-
 gulp.task('watch', function() {
 	gulp.watch(htmlSources, ['html']);
-	gulp.watch(cssSources, ['css']);
+	gulp.watch(cssSources, ['inline', 'html']);
 	gulp.watch(jsSources, ['js']);
 	gulp.watch(imgSources, ['images']);
 });
@@ -93,4 +95,4 @@ gulp.task('connect', function() {
 });
 
 
-gulp.task('default', ['html', 'css', 'js', 'images', 'connect', 'watch']);
+gulp.task('default', ['inline','html', 'js', 'images','connect', 'watch']);
