@@ -40,6 +40,7 @@ form {
   display: flex;
 }
 
+
 .randomPizzaContainer:after {
   content: "";
   display: table;

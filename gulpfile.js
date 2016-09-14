@@ -103,6 +103,7 @@ gulp.task('watch', function() {
 	gulp.watch(cssSources, ['inline', 'html']);
 	gulp.watch(jsSources, ['js']);
 	gulp.watch(imgSources, ['images']);
+	gulp.watch(cssSources, ['css']);
 });
 
 gulp.task('connect', function() {
