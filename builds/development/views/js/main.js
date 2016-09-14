@@ -360,6 +360,7 @@ var makeRandomPizza = function() {
   return pizza;
 };
 
+////can a dom fragment be used here?
 // returns a DOM element for each pizza
 var pizzaElementGenerator = function(i) {
   var pizzaContainer,             // contains pizza title, image and list of ingredients
@@ -408,7 +409,7 @@ var resizePizzas = function(size) {
   function changeSliderLabel(size) {
     switch(size) {
       case "1":
-        document.querySelector("#pizzaSize").innerHTML = "Small";
+        document.querySelector("#pizzaSize").innerHTML = "Small";  ////outputs size to page
         return;
       case "2":
         document.querySelector("#pizzaSize").innerHTML = "Medium";
@@ -434,27 +435,36 @@ var resizePizzas = function(size) {
       switch(size) {
         case "1":
           return 0.25;
+
         case "2":
           return 0.3333;
+
         case "3":
           return 0.5;
+
         default:
           console.log("bug in sizeSwitcher");
       }
     }
 
     var newSize = sizeSwitcher(size);
-    var dx = (newSize - oldSize) * windowWidth;
+//    var dx = (newSize - oldSize) * windowWidth;
+	   var dx = sizeSwitcher(size);
 
     return dx;
   }
 
-  // Iterates through pizza elements on the page and changes their widths
+  ////update to use transform and/or remove dom manipulation from loop
+	// Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
-    for (var i = 0; i < document.querySelectorAll(".randomPizzaContainer").length; i++) {
-      var dx = determineDx(document.querySelectorAll(".randomPizzaContainer")[i], size);
-      var newwidth = (document.querySelectorAll(".randomPizzaContainer")[i].offsetWidth + dx) + 'px';
-      document.querySelectorAll(".randomPizzaContainer")[i].style.width = newwidth;
+	 var randomPizzaCollection = document.querySelectorAll(".randomPizzaContainer");
+	 var dx = determineDx(randomPizzaCollection[0], size);
+//	 var newwidth = (randomPizzaCollection[0].offsetWidth + dx) + 'px';
+	 var newwidth = (dx * 100) + '%';
+    for (var i = 0; i < randomPizzaCollection.length; i++) {
+//      var dx = determineDx(randomPizzaCollection[i], size);
+//      var newwidth = (randomPizzaCollection[i].offsetWidth + dx) + 'px';
+      randomPizzaCollection[i].style.width = newwidth;
     }
   }
 
@@ -499,10 +509,11 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 
 // Moves the sliding background pizzas based on scroll position
-function updatePositions() {
+function updatePositions() {						////update positions
   frame++;
   window.performance.mark("mark_start_frame");
 
+	//// accomplish with transform?
   var items = document.querySelectorAll('.mover');
   for (var i = 0; i < items.length; i++) {
     var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));

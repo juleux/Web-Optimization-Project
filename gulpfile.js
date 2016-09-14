@@ -50,14 +50,14 @@ gulp.task('clean', del.bind(null, ['.tmp', 'builds/production/*', '!builds/produ
 // Minify css and save in production folder - then reload page in browser
 gulp.task('css', function () {
   gulp.src(cssSources)
-  .pipe(cssmin())
+//  .pipe(cssmin())
   .pipe(gulp.dest('builds/production/views/'))
   .pipe(connect.reload());
 });
 
 gulp.task('inline', function() {
    return gulp.src(htmlSources).on('error', errorHandler)
-   .pipe(inline()).on('error', errorHandler)
+//   .pipe(inline()).on('error', errorHandler)
    .pipe(gulp.dest('builds/production/')).on('error', errorHandler);
 });
 
@@ -70,7 +70,7 @@ function errorHandler (error) {
 // Runs after css inline is complete
 gulp.task('html', ['inline'], function () {
   gulp.src(htmlOutput)
-  .pipe(htmlmin({collapseWhitespace: true}))
+//  .pipe(htmlmin({collapseWhitespace: true}))
   .pipe(gulp.dest('builds/production/'))
   .pipe(connect.reload());
 });
@@ -78,7 +78,7 @@ gulp.task('html', ['inline'], function () {
 // Minify html in Views folder and save in production folder - then reload page in browser
 gulp.task('htmlViews', function () {
   gulp.src(htmlViews)
-  .pipe(htmlmin({collapseWhitespace: true}))
+//  .pipe(htmlmin({collapseWhitespace: true}))
   .pipe(gulp.dest('builds/production/views/'))
   .pipe(connect.reload());
 });
@@ -86,7 +86,7 @@ gulp.task('htmlViews', function () {
 // Minify javascript and save in production folder - then reload page in browser
 gulp.task('js', function() {
 	gulp.src(jsSources)
-	.pipe(uglify('*.js'))
+//	.pipe(uglify('*.js'))
 	.pipe(gulp.dest('builds/production/'))
 	.pipe(connect.reload())
 });
