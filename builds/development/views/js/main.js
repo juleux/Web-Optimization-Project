@@ -362,7 +362,46 @@ var makeRandomPizza = function() {
 
 ////can a dom fragment be used here?
 // returns a DOM element for each pizza
-var pizzaElementGenerator = function(i) {
+//var pizzaElementGenerator = function(i) {
+//  var pizzaContainer,             // contains pizza title, image and list of ingredients
+//      pizzaImageContainer,        // contains the pizza image
+//      pizzaImage,                 // the pizza image itself
+//      pizzaDescriptionContainer,  // contains the pizza title and list of ingredients
+//      pizzaName,                  // the pizza name itself
+//      ul;                         // the list of ingredients
+//
+//  pizzaContainer = document.createElement("div");
+//  pizzaImageContainer = document.createElement("div");
+//  pizzaImage = document.createElement("img");
+//  pizzaDescriptionContainer = document.createElement("div");
+//
+//  pizzaContainer.classList.add("randomPizzaContainer");
+//  pizzaContainer.style.width = "33.33%";   	// source of fixed width preventing addClass from working
+//  pizzaContainer.style.height = "325px";
+//  pizzaContainer.id = "pizza" + i;                // gives each pizza element a unique id
+//  pizzaImageContainer.style.width="35%";
+//
+//  pizzaImage.src = "img/pizza-120_120.png";
+//  pizzaImage.classList.add("img-responsive");
+//  pizzaImageContainer.appendChild(pizzaImage);
+//  pizzaContainer.appendChild(pizzaImageContainer);
+//
+//
+//  pizzaDescriptionContainer.style.width="65%";
+//
+//  pizzaName = document.createElement("h4");
+//  pizzaName.innerHTML = randomName();     		// gives each pizza element a unique name
+//  pizzaDescriptionContainer.appendChild(pizzaName);
+//
+//  ul = document.createElement("ul");
+//  ul.innerHTML = makeRandomPizza();			// gives each pizza unique ingredients
+//  pizzaDescriptionContainer.appendChild(ul);
+//  pizzaContainer.appendChild(pizzaDescriptionContainer);
+//
+//  return pizzaContainer;
+//};
+
+var pizzaFragment = function(i) {
   var pizzaContainer,             // contains pizza title, image and list of ingredients
       pizzaImageContainer,        // contains the pizza image
       pizzaImage,                 // the pizza image itself
@@ -370,13 +409,14 @@ var pizzaElementGenerator = function(i) {
       pizzaName,                  // the pizza name itself
       ul;                         // the list of ingredients
 
+//  pizzaFrag = document.createDocumentFragment();
   pizzaContainer = document.createElement("div");
   pizzaImageContainer = document.createElement("div");
   pizzaImage = document.createElement("img");
   pizzaDescriptionContainer = document.createElement("div");
 
   pizzaContainer.classList.add("randomPizzaContainer");
-  pizzaContainer.style.width = "33.33%";
+  pizzaContainer.style.width = "33.33%";   	// source of fixed width preventing addClass from working
   pizzaContainer.style.height = "325px";
   pizzaContainer.id = "pizza" + i;                // gives each pizza element a unique id
   pizzaImageContainer.style.width="35%";
@@ -390,16 +430,27 @@ var pizzaElementGenerator = function(i) {
   pizzaDescriptionContainer.style.width="65%";
 
   pizzaName = document.createElement("h4");
-  pizzaName.innerHTML = randomName();
+  pizzaName.innerHTML = randomName();     		// gives each pizza element a unique name
   pizzaDescriptionContainer.appendChild(pizzaName);
 
   ul = document.createElement("ul");
-  ul.innerHTML = makeRandomPizza();
+  ul.innerHTML = makeRandomPizza();			// gives each pizza unique ingredients
   pizzaDescriptionContainer.appendChild(ul);
   pizzaContainer.appendChild(pizzaDescriptionContainer);
+//  pizzaFrag.appendChild(pizzaContainer);
 
   return pizzaContainer;
-};
+}
+
+// add pizza elements to document fragment before adding to DOM
+var pizzaElementGenerator = function() {
+	var pizzaFrag = document.createDocumentFragment();
+	for (var i = 2; i < 100; i++) {
+		pizzaFrag.appendChild(pizzaFragment(i));
+	}
+	return pizzaFrag;
+}
+
 
 // resizePizzas(size) is called when the slider in the "Our Pizzas" section of the website moves.
 var resizePizzas = function(size) {
@@ -500,10 +551,12 @@ changePizzaSizes(size);
 window.performance.mark("mark_start_generating"); // collect timing data
 
 // This for-loop actually creates and appends all of the pizzas when the page loads
-for (var i = 2; i < 100; i++) {
-  var pizzasDiv = document.getElementById("randomPizzas");
-  pizzasDiv.appendChild(pizzaElementGenerator(i));
-}
+var pizzasDiv = document.getElementById("randomPizzas");
+pizzasDiv.appendChild(pizzaElementGenerator());
+//for (var i = 2; i < 100; i++) {
+////  var pizzasDiv = document.getElementById("randomPizzas");
+//  pizzasDiv.appendChild(pizzaElementGenerator(i));
+//}
 
 // User Timing API again. These measurements tell you how long it took to generate the initial pizzas
 window.performance.mark("mark_end_generating");
@@ -557,7 +610,7 @@ window.addEventListener('scroll', updatePositions);
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  for (var i = 0; i < 20; i++) {
+  for (var i = 0; i < 200; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "img/pizza-120_120.png";
