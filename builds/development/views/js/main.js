@@ -587,16 +587,48 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 
 // Moves the sliding background pizzas based on scroll position
 
+//
+//function updatePositions() {						////update positions
+//  frame++;
+//  window.performance.mark("mark_start_frame");
+//
+////  var items = document.getElementsByClassName('mover');
+//  itemsLength = items.length;
+//  var subPhase = document.body.scrollTop / 1250;
+//  for (var i = 0; i < itemsLength; i++) {
+//    var phase = 100 * Math.sin(subPhase + (i % 5));
+////    items[i].style.left = items[i].basicLeft + phase + 'px';
+//	 items[i].style.transform = 'translateX(' + phase + 'px)';
+//  }
+//
+//  // User Timing API to the rescue again. Seriously, it's worth learning.
+//  // Super easy to create custom metrics.
+//  window.performance.mark("mark_end_frame");
+//  window.performance.measure("measure_frame_duration", "mark_start_frame", "mark_end_frame");
+//  if (frame % 10 === 0) {
+//    var timesToUpdatePosition = window.performance.getEntriesByName("measure_frame_duration");
+//    logAverageFrame(timesToUpdatePosition);
+//  }
+//}
 
-function updatePositions() {						////update positions
+//// runs updatePositions on scroll
+//window.addEventListener('scroll', updatePositions);
+
+
+// Reference: http://www.html5rocks.com/en/tutorials/speed/animations/
+
+//var last_known_scroll_position = 0;
+var last_known_doc_position = 0;
+var ticking = false;
+
+function updatePositions(body_pos) {
   frame++;
   window.performance.mark("mark_start_frame");
 
-//  var items = document.getElementsByClassName('mover');
   itemsLength = items.length;
-  var subPhase = document.body.scrollTop / 1250;
+//  var subPhase = body_pos;
   for (var i = 0; i < itemsLength; i++) {
-    var phase = 100 * Math.sin(subPhase + (i % 5));
+    var phase = 100 * Math.sin(body_pos + (i % 5));
 //    items[i].style.left = items[i].basicLeft + phase + 'px';
 	 items[i].style.transform = 'translateX(' + phase + 'px)';
   }
@@ -611,8 +643,17 @@ function updatePositions() {						////update positions
   }
 }
 
-// runs updatePositions on scroll
-window.addEventListener('scroll', updatePositions);
+window.addEventListener('scroll', function(e) {
+//  last_known_scroll_position = window.scrollY;
+  last_known_doc_position = document.body.scrollTop / 1250;
+  if (!ticking) {
+    window.requestAnimationFrame(function() {
+      updatePositions(last_known_doc_position);
+      ticking = false;
+    });
+  }
+  ticking = true;
+});
 
 // Generates the sliding pizzas when the page loads.
 document.addEventListener('DOMContentLoaded', function() {
@@ -626,7 +667,7 @@ document.addEventListener('DOMContentLoaded', function() {
     elem.style.height = "100px";
     elem.style.width = "73.333px";
 //    elem.basicLeft = (i % cols) * s;
-	 elem.style.left = (100 * Math.sin(i % 5))+((i % cols) * s) + 'px';
+	 elem.style.left = (100 * Math.sin(1.7 + (i % 5)))+((i % cols) * s) + 'px';
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
     movingPizzaElement.appendChild(elem);
   }
