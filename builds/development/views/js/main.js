@@ -419,7 +419,8 @@ var pizzaFragment = function(i) {
   pizzaDescriptionContainer = document.createElement("div");
 
   pizzaContainer.classList.add("randomPizzaContainer");
-  pizzaContainer.style.width = "33.33%";   	// source of fixed width preventing addClass from working
+  pizzaContainer.classList.add("randomPizzaContainer-med");
+//  pizzaContainer.style.width = "33.33%";   	// source of fixed width preventing addClass from working
   pizzaContainer.style.height = "325px";
   pizzaContainer.id = "pizza" + i;                // gives each pizza element a unique id
   pizzaImageContainer.style.width="35%";
@@ -511,15 +512,15 @@ var resizePizzas = function(size) {
   function determineWidth (size) {
 	 switch(size) {
         case "1":
-          return 25;
-//			 return "randomPizzaContainer-small";
+//          return 25;
+			 return "randomPizzaContainer-sml";
 
         case "2":
-          return 33.33;
-//			 return "randomPizzaContainer-med";
+//          return 33.33;
+			 return "randomPizzaContainer-med";
         case "3":
-          return 50;
-//			 	return "randomPizzaContainer-lrg";
+//          return 50;
+			 	return "randomPizzaContainer-lrg";
         default:
           console.log("bug in sizeSwitcher");
       }
@@ -532,12 +533,14 @@ var resizePizzas = function(size) {
 	 var dx = determineWidth(size);
 //	 var newwidth = (randomPizzaCollection[0].offsetWidth + dx) + 'px';
 	 var newwidth = dx + '%';
+	 var newScale = dx/100;
     for (var i = 0; i < collectionLength; i++) {
 //      var dx = determineDx(randomPizzaCollection[i], size);
 //      var newwidth = (randomPizzaCollection[i].offsetWidth + dx) + 'px';
-      randomPizzaCollection[i].style.width = newwidth;
-//		 randomPizzaCollection[i].classList.remove("randomPizzaContainer-small", "randomPizzaContainer-med", "randomPizzaContainer-lrg");
-//		 randomPizzaCollection[i].classList.add(dx);
+//      randomPizzaCollection[i].style.width = newwidth;
+//		 randomPizzaCollection[i].style.transform = 'scale(' + newScale + ')';
+		 randomPizzaCollection[i].classList.remove("randomPizzaContainer-sml", "randomPizzaContainer-med", "randomPizzaContainer-lrg");
+		 randomPizzaCollection[i].classList.add(dx);
 		 
    }
 //	window.requestAnimationFrame(changePizzaSizes(size));
