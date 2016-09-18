@@ -460,24 +460,41 @@ var resizePizzas = function(size) {
   window.performance.mark("mark_start_resize");   // User Timing API function
 
   // Changes the value for the size of the pizza above the slider
-  function changeSliderLabel(size) {
-	  var pizzaLabel = document.getElementById("pizzaSize");
-    switch(size) {
-      case "1":
-        pizzaLabel.innerHTML = "Small";  ////outputs size to page
-        return;
-      case "2":
-        pizzaLabel.innerHTML = "Medium";
-        return;
-      case "3":
-        pizzaLabel.innerHTML = "Large";
-        return;
-      default:
-        console.log("bug in changeSliderLabel");
-    }
-  }
+//  function changeSliderLabel(size) {
+//	  var pizzaLabel = document.getElementById("pizzaSize");
+//    switch(size) {
+//      case "1":
+//        pizzaLabel.innerHTML = "Small";  ////outputs size to page
+//        return;
+//      case "2":
+//        pizzaLabel.innerHTML = "Medium";
+//        return;
+//      case "3":
+//        pizzaLabel.innerHTML = "Large";
+//        return;
+//      default:
+//        console.log("bug in changeSliderLabel");
+//    }
+//  }
+	
+//function updateSizeRadio(size) {
+//	  var pizzaLabel = document.getElementById("pizzaRadio");
+//    switch(size) {
+//      case "1":
+//        pizzaLabel.classList.add("active");  
+//        return;
+//      case "2":
+//        pizzaLabel.innerHTML = "Medium";
+//        return;
+//      case "3":
+//        pizzaLabel.innerHTML = "Large";
+//        return;
+//      default:
+//        console.log("bug in changeSliderLabel");
+//    }
+//  }
 
-  changeSliderLabel(size);
+//  changeSliderLabel(size);
 
    // Returns the size difference to change a pizza element from one size to another. Called by changePizzaSlices(size).
 //  function determineDx (elem, size) {

@@ -100,6 +100,7 @@ gulp.task('images', function() {
 
 gulp.task('watch', function() {
 	gulp.watch(htmlSources, ['html']);
+	gulp.watch(htmlViews, ['htmlViews']);
 	gulp.watch(cssSources, ['inline', 'html']);
 	gulp.watch(jsSources, ['js']);
 	gulp.watch(imgSources, ['images']);
