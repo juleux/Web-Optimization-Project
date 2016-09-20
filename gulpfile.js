@@ -1,5 +1,4 @@
 // Gulp file for Web Optimization project
-// Source folder contains project files provided by Udacity.  In future, this file can be modified to treat Source folder as location for pre-processed files, i.e. Sass, Compass, Coffee
 // Development folder contains my working files (for editing), including optimized images - input.
 // Production folder contains compressed version of site - output.
 
@@ -33,7 +32,7 @@ var htmlSources = [
 
 
 var htmlViews = [
-	'builds/development/views/*.html'  //html in views directory minified but not inlined
+	'builds/development/views/*.html'  //html in views directory minified but not inlined (css)
 ];
 
 var htmlOutput = [
