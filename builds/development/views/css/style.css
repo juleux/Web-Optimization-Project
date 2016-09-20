@@ -38,18 +38,6 @@ form {
 }
 
 
-.randomPizzaContainer-sml {
-	width: 25%;
-}
-
-.randomPizzaContainer-med {
-	width: 33.33%;
-}
-
-.randomPizzaContainer-lrg {
-	width: 50%;
-}
-
 .randomPizzaContainer {
   float: left;
   display: flex;

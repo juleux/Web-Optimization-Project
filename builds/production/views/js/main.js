@@ -400,7 +400,7 @@ var pizzaFragment = function(i) {
   pizzaContainer.appendChild(pizzaDescriptionContainer);
 
   return pizzaContainer;
-}
+};
 
 // add collection of 100 random pizzas to a document fragment, then append the fragment to the page
 var pizzaElementGenerator = function() {
@@ -409,14 +409,14 @@ var pizzaElementGenerator = function() {
 		pizzaFrag.appendChild(pizzaFragment(i));
 	}
 	return pizzaFrag;
-}
-
+};
+var newWidth = 0;  //global
 
 // resizePizzas(size) is called when the radio button in the "Our Pizzas" section of the website changes.
 var resizePizzas = function(size) {
   window.performance.mark("mark_start_resize");   // User Timing API function
 
- function changePizzaSizes(size) {
+ function setPizzaSize(size) {
 	switch(size) {
       case "1":
         newWidth = 25;
@@ -430,15 +430,39 @@ var resizePizzas = function(size) {
       default:
         console.log("bug in sizeSwitcher");
     }
-    var randomPizzaCollection = document.getElementsByClassName("randomPizzaContainer");
-	 var collectionLength = randomPizzaCollection.length;
-
-    for (var i = 0; i < collectionLength; i++) {
-      randomPizzaCollection[i].style.width = newWidth + "%";
-    }
+  
  }
-changePizzaSizes(size);
-		 
+
+setPizzaSize(size);
+	
+// Set initial conditions for changing pizza sizes
+var pizzaStart = 0;
+var count = 12;  //max 12 pizzas on screen at any one time
+var randomPizzaCollection = document.getElementsByClassName("randomPizzaContainer");
+var collectionLength = randomPizzaCollection.length;
+
+// Initiate batched pizza size change
+window.requestAnimationFrame(changePizzaSizes);	
+	
+// Iterate through pizza collection in batches and set new width
+function changePizzaSizes() {
+	 if (pizzaStart >= collectionLength) {
+      return; 
+	 }
+
+    var end = pizzaStart + count;
+    for (var i = pizzaStart; i < end; i++) {
+
+      if (i >= collectionLength) {
+        return;
+		}
+
+      randomPizzaCollection[i].style.width = newWidth + "%";
+	 
+   }
+	pizzaStart += count;
+	window.requestAnimationFrame(changePizzaSizes);
+  }
 
   // Timing API code to measure pizza resize time
   window.performance.mark("mark_end_resize");
@@ -448,7 +472,7 @@ changePizzaSizes(size);
 	
 };  // end of resize pizzas
 
-
+//  Random pizza generation
 window.performance.mark("mark_start_generating"); // collect timing data
 
 // Create and append random pizzas when the page loads
@@ -462,7 +486,7 @@ window.performance.measure("measure_pizza_generation", "mark_start_generating", 
 var timeToGenerate = window.performance.getEntriesByName("measure_pizza_generation");
 console.log("Time to generate pizzas on load: " + timeToGenerate[0].duration + "ms");
 
-// Start of background pizza generation and movement.
+// Background pizza generation and movement.
 
 // Iterator for number of times the pizzas in the background have scrolled.
 // Used by updatePositions() to decide when to log the average time per frame
