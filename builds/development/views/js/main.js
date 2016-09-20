@@ -430,7 +430,6 @@ var resizePizzas = function(size) {
       default:
         console.log('bug in sizeSwitcher');
     }
-  
  }
 
 setPizzaSize(size);
