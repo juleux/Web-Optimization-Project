@@ -377,7 +377,7 @@ var pizzaFragment = function(i) {
   pizzaDescriptionContainer = document.createElement('div');
 
   pizzaContainer.classList.add('randomPizzaContainer');
-  pizzaContainer.style.width = '33.33%';   	
+  pizzaContainer.style.width = '33.33%';
   pizzaContainer.style.height = '325px';
   pizzaContainer.id = 'pizza' + i;                // gives each pizza element a unique id
   pizzaImageContainer.style.width='35%';
@@ -433,7 +433,7 @@ var resizePizzas = function(size) {
  }
 
 setPizzaSize(size);
-	
+
 // Set initial conditions for changing pizza sizes
 var pizzaStart = 0;
 var count = 12;  //max 12 pizzas on screen at any one time
@@ -441,12 +441,12 @@ var randomPizzaCollection = document.getElementsByClassName('randomPizzaContaine
 var collectionLength = randomPizzaCollection.length;
 
 // Initiate batched pizza size change
-window.requestAnimationFrame(changePizzaSizes);	
-	
+window.requestAnimationFrame(changePizzaSizes);
+
 // Iterate through pizza collection in batches and set new width
 function changePizzaSizes() {
 	 if (pizzaStart >= collectionLength) {
-      return; 
+      return;
 	 }
 
     var end = pizzaStart + count;
@@ -457,7 +457,7 @@ function changePizzaSizes() {
 		}
 
       randomPizzaCollection[i].style.width = newWidth + '%';
-	 
+
    }
 	pizzaStart += count;
 	window.requestAnimationFrame(changePizzaSizes);
@@ -468,7 +468,7 @@ function changePizzaSizes() {
   window.performance.measure('measure_pizza_resize', 'mark_start_resize', 'mark_end_resize');
   var timeToResize = window.performance.getEntriesByName('measure_pizza_resize');
   console.log('Time to resize pizzas: ' + timeToResize[timeToResize.length-1].duration + 'ms');
-	
+
 };  // end of resize pizzas
 
 //  Random pizza generation
@@ -513,11 +513,18 @@ function updatePositions(body_pos) {
   window.performance.mark('mark_start_frame');
 
   itemsLength = items.length;
-	
-  for (var i = 0; i < itemsLength; i++) {
-    var phase = 100 * Math.sin(body_pos + (i % 5));
-	 items[i].style.transform = 'translateX(' + phase + 'px)';  //move pizzas back and forth along the x axis
+  var phase = [],
+		i=0,
+		row = 0;
+
+  for (row = 0; row < 5; row++) {
+    phase[row] = 100 * Math.sin(body_pos + row);
   }
+
+  for (i = 0; i < itemsLength; i++) {
+	 items[i].style.transform = 'translateX(' + phase[i%5] + 'px)';  //move pizzas back and forth along the x axis
+  }
+
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
   // Super easy to create custom metrics.
@@ -529,7 +536,7 @@ function updatePositions(body_pos) {
   }
 }  //end of updatePositions
 
-// Scroll events trigger repeatedly in response to mouse-wheel action.  
+// Scroll events trigger repeatedly in response to mouse-wheel action.
 // This code manages background pizza movements by limiting the capture and use of scroll data to once per execution of updatePositions
 window.addEventListener('scroll', function(e) {
   last_known_doc_position = document.body.scrollTop / 1250;
@@ -546,7 +553,7 @@ window.addEventListener('scroll', function(e) {
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  var movingPizzaCount = 24;   // maximum number of background pizzas visible during a top to bottom scroll.
+  var movingPizzaCount = 40;  // maximum number of background pizzas visible during a top to bottom scroll.
   var movingPizzaElement = document.getElementById('movingPizzas1');
   for (var i = 0, elem; i < movingPizzaCount; i++) {
     elem = document.createElement('img');
@@ -554,7 +561,7 @@ document.addEventListener('DOMContentLoaded', function() {
     elem.src = 'img/pizza-120_120.png';
     elem.style.height = '100px';
     elem.style.width = '73.333px';
-	 elem.style.left = (100 * Math.sin(1.7 + (i % 5)))+((i % cols) * s) + 'px';  //calculates starting position on x axis
+    elem.style.left = (100 * Math.sin(1.7 + (i % 5)))+((i % cols) * s) + 'px';  //calculates starting position on x axis
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
     movingPizzaElement.appendChild(elem);
   }
